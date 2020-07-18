@@ -10,23 +10,21 @@ import Dashboard from './Dashboard';
 import Monitoring from './Monitoring.js';
 import Manageraddrole from './Manageraddrole';
 import Updaterole from './Updaterole';
-import Deleterole from './Deleterole';
+
 // import dashboard from './dashboard.js';
 import Logs from './Logs.js';
 import Navigation from './Navigation'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 
-import NavigationManager from './NavigationManager'
-import NavigationSubManager from './NavigationSubManager'
 class Roles extends Component {
   render() {
     return (
       <BrowserRouter>
-        <Route path='/navigation' component={Navigation} />
-        <Route path='/manageraddrole' component={Manageraddrole} />
+        {/* <Route path='/navigation' component={Navigation} />
+        <Route path='/manageraddrole' component={Manageraddrole} /> */}
         <div className='app'>
-        {this.props.role === "admin" ? <Navigation/>:(this.props.role === "manager" ? <NavigationManager/>:(this.props.role === "submanager"?<NavigationSubManager/>:null ) )}
+        {this.props.role === "admin" ? <Navigation/>:null}
           {/* <!-- Navbar goes here --> */}
          
 

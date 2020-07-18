@@ -10,16 +10,18 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { serviceadd } from '../actions/authAction'
 import Alert from '../layout/Alert'
+import { sendNotification } from '../actions/notificationAction'
+import {axiosInstance} from '../common/config';
 
 import Navigation from './Navigation'
 import NavigationManager from './NavigationManager'
 import NavigationSubManager from './NavigationSubManager'
 
 // import { Prev } from 'react-bootstrap/PageItem';
-import axios from 'axios';
+
 import './Addservices.css';
 
-const Addservices =({serviceadd, isAuthenticated,auth,role,token })=>{
+const Addservices =({serviceadd, sendNotification, isAuthenticated,auth,role,token })=>{
   
 const [formData, setFormData] = useState({
 IPaddress: '',
@@ -75,6 +77,16 @@ const{ IPaddress, account, password, service,status} = formData;
     // });
   }
 
+  const notify =()=>{
+    let notificationFields = {}
+    notificationFields.sender = auth.email;
+			notificationFields.url = "monitoring";
+			notificationFields.message = `${auth.email} has added new VM.`;
+			notificationFields.broadcast = true;
+			notificationFields.notification_type = "VM";
+    sendNotification(notificationFields)
+  }
+
   const updateStatus =(response) =>{
     setFormData({status:response});
 
@@ -84,21 +96,28 @@ const{ IPaddress, account, password, service,status} = formData;
   const handleSubmit = (e) => {
     e.preventDefault();
   
-    serviceadd(formData)
-   
     
-    setFormData({status:null});
 
-
-    axios(
+    axiosInstance(
       {
       method: "post",
-      url:"http://192.168.1.110:8080/execute-VM",
+      url:"http://58.65.201.140:8080/execute-VM",
       data: {"User_data":(formData)}
     }
     ).then(res=>{
       console.log(res.data);
        updateStatus(res.data);
+       if(res.data){
+        serviceadd(formData)
+        notify();
+        
+        setFormData({IPaddress: '',
+        account: '',
+        password: '',
+        service: '',
+        status: false});
+    
+       }
     
     }).catch(err=>{console.log(err)})
     console.log(JSON.stringify(formData))
@@ -125,11 +144,13 @@ const{ IPaddress, account, password, service,status} = formData;
 
               <div className="Login white">
      <h1 className="center black-text">Add VM's</h1>
+     
            <br />
+          
      <form onSubmit={e => handleSubmit(e)}>
+     <Alert />
        <FormGroup controlId="IPaddress " >
          <p className="black-text">IP address</p>
-         <Alert />
       <FormControl
             type="text"
             className="form-control black-text "
@@ -236,13 +257,15 @@ const{ IPaddress, account, password, service,status} = formData;
 
     Addservices.propTypes = {
       serviceadd: PropTypes.func.isRequired,
+      sendNotification:  PropTypes.func.isRequired,
       isAuthenticated: PropTypes.bool,
     };
     
     const mapStateToProps = state => ({
       isAuthenticated: state.auth.isAuthenticated,
       token: state.auth.token,
-      role: state.auth.role
+      role: state.auth.role,
+      auth: state.auth
     })
     
-    export default connect(mapStateToProps, { serviceadd })(Addservices)
+    export default connect(mapStateToProps, { serviceadd, sendNotification })(Addservices)

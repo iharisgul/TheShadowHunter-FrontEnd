@@ -10,7 +10,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 // import Dashboard from './Dashboard';
 // import Monitoring from './Monitoring.js';
 // import Updaterole from './Updaterole';
-// import Deleterole from './Deleterole';
+
 // import UserManagement from './UserManagement';
 import { Button, FormGroup, FormControl } from "react-bootstrap";
 import Navigation from './Navigation'
@@ -20,7 +20,7 @@ import {connect} from 'react-redux'
 import NavigationManager from './NavigationManager'
 import NavigationSubManager from './NavigationSubManager'
 // import dashboard from './dashboard.js';
-import axios from 'axios';
+import {axiosInstance} from '../common/config';
 
 class Scanner extends Component{
 
@@ -62,7 +62,7 @@ class Scanner extends Component{
         event.preventDefault();
         this.setState({status:null});
     
-        axios(
+        axiosInstance(
           {
           method: "post",
           url:"http://192.168.1.110:8080/execute-scanner",

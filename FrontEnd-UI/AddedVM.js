@@ -11,7 +11,7 @@ import {connect} from 'react-redux'
 
 import NavigationManager from './NavigationManager'
 import NavigationSubManager from './NavigationSubManager'
-import axios from 'axios';
+import {axiosInstance} from '../common/config';
 import moment from "moment";
 // import dashboard from './dashboard.js';
 class AddedVM extends Component {
@@ -23,9 +23,9 @@ class AddedVM extends Component {
             services: null
         }
 
-        axios({
+        axiosInstance({
             method: 'post',
-            url: 'http://localhost:5000/api/users/getservices',//'http://115.186.176.139:5000/api/attacksessions/startattacksession',
+            url: '/api/users/getservices',//'http://115.186.176.139:5000/api/attacksessions/startattacksession',
             
         })
             .then(response => {
@@ -38,7 +38,7 @@ class AddedVM extends Component {
 deleteService(e){
 console.log(e.target.value)
 
-axios(
+axiosInstance(
   {
   method: "post",
   url:"http://192.168.1.110:8080/execute-VM",

@@ -10,22 +10,24 @@ import Signup from './Signup.js';
 import Dashboard from './Dashboard';
 import Monitoring from './Monitoring.js';
 import Updaterole from './Updaterole';
-import Deleterole from './Deleterole';
+
 import Roles from './Roles';
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { departmentadd } from '../actions/authAction'
 import NavigationManager from './NavigationManager'
 import NavigationSubManager from './NavigationSubManager'
+
+import { sendNotification } from '../actions/notificationAction'
 import { useState } from 'react'
 import { Button, FormGroup, FormControl, controlId } from "react-bootstrap";
 import Navigation from './Navigation'
 // import dashboard from './dashboard.js';
 import Logs from './Logs.js';
-import axios from 'axios';
+import {axiosInstance} from '../common/config';
 import Alert from '../layout/Alert'
 
-const Department =({departmentadd, isAuthenticated,auth,role,token })=>{
+const Department =({departmentadd,sendNotification, isAuthenticated,auth,role,token })=>{
   
   const [formData, setFormData] = useState({
   IPaddress: '',
@@ -51,21 +53,29 @@ const Department =({departmentadd, isAuthenticated,auth,role,token })=>{
   const handleSubmit = (e) => {
     e.preventDefault();
   
-    departmentadd(formData)
-   
-    
-    setFormData({status:null});
+  
 
 
-    axios(
+    axiosInstance(
       {
       method: "post",
-      url:"http://182.180.130.115:8080/add-department",
+      url:"http://58.65.201.140:8080/add-department",
       data: {"User_data":(formData)}
     }
     ).then(res=>{
       console.log(res.data);
        updateStatus(res.data);
+       if(res.data){
+        departmentadd(formData)
+        notify();
+        
+        setFormData({IPaddress: '',
+        account: '',
+        password: '',
+       
+        status: false});
+       }
+       
     
     }).catch(err=>{console.log(err)})
     console.log(JSON.stringify(formData))
@@ -74,6 +84,15 @@ const Department =({departmentadd, isAuthenticated,auth,role,token })=>{
   }
 
 
+  const notify =()=>{
+    let notificationFields = {}
+    notificationFields.sender = auth.email;
+			notificationFields.url = "monitoring";
+			notificationFields.message = `${auth.email} has added new department.`;
+			notificationFields.broadcast = true;
+			notificationFields.notification_type = "Department";
+    sendNotification(notificationFields)
+  }
 
   
     return (
@@ -95,9 +114,9 @@ const Department =({departmentadd, isAuthenticated,auth,role,token })=>{
      <h1 className="center black-text">Add Department</h1>
            <br />
      <form onSubmit={e => handleSubmit(e)}>
+     <Alert />
        <FormGroup controlId="IPaddress" bsSize="large">
        <p className="black-text">IP address</p>
-         <Alert />
       <FormControl
             type="text"
             className="form-control black-text "
@@ -219,14 +238,16 @@ const Department =({departmentadd, isAuthenticated,auth,role,token })=>{
    }
 
 Department.propTypes = {
+  sendNotification: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
   token: state.auth.token,
-  role: state.auth.role
+  role: state.auth.role,
+  auth: state.auth
 })
 
-export default connect(mapStateToProps, { departmentadd })(Department)
+export default connect(mapStateToProps, { departmentadd, sendNotification })(Department)
 

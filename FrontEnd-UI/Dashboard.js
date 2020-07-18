@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import LineChart from './LineChart';
+// import LineChart from './LineChart';
 import BarChart from './BarChart';
 import './dashboard.css';
-import PieChart from './PieChart';
+// import PieChart from './PieChart';
 import DoughnutChart from './DoughnutChart';
 import HorizontalBar from './HorizontalBar';
 
@@ -13,8 +13,15 @@ import Navigation from './Navigation'
 import NavigationManager from './NavigationManager'
 import NavigationSubManager from './NavigationSubManager'
 import Radarchart from './RadarChart';
+import { logsDoughnutGraph, alertsBarGraph, vmHorizontalGraph } from "../actions/visualizationAction";
 
 class Dashboard extends Component {
+  constructor(props){
+    super(props);
+    this.props.logsDoughnutGraph();
+    this.props.alertsBarGraph();
+    this.props.vmHorizontalGraph();
+  }
   render() {
     return (
       <BrowserRouter>
@@ -34,11 +41,11 @@ class Dashboard extends Component {
                       <div className='card-body-icon'>
                         <i className='fas fa-fw fa-list' />
                       </div>
-                      <div className='mr-5'>New Emails!</div>
+                      <div className='mr-5'>Scan Result!</div>
                     </div>
                     <a
                       className='card-footer text-white clearfix small z-1'
-                      href='#ee'
+                      href={this.props.role === "admin" ?'/viewscan':(this.props.role  === "manager" ? '/managerviewscan':null ) }
                     >
                       <span className='float-left'>View Details</span>
                       <span className='float-right'>
@@ -53,12 +60,16 @@ class Dashboard extends Component {
                       <div className='card-body-icon'>
                         <i className='fas fa-fw fa-list' />
                       </div>
-                      <div className='mr-5'>New Logs!</div>
+                      <div className='mr-5'>Logs!</div>
                     </div>
                     <a
                       className='card-footer text-white clearfix small z-1'
-                      href='#ee'
+                      href={this.props.role === "admin" ?'/logs':(this.props.role  === "manager" ? '/managerlogs' :this.props.role  === "submanager" ? '/submanagerlogs':null) }
                     >
+
+                  
+
+
                       <span className='float-left'>View Details</span>
                       <span className='float-right'>
                         <i className='fas fa-angle-right' />
@@ -72,12 +83,13 @@ class Dashboard extends Component {
                       <div className='card-body-icon'>
                         <i className='fas fa-fw fa-shopping-cart' />
                       </div>
-                      <div className='mr-5'>New Deception Alerts!</div>
+                      <div className='mr-5'>Alerts!</div>
                     </div>
                     <a
                       className='card-footer text-white clearfix small z-1'
-                      href='#ee'
+                      href={this.props.role === "admin" ?'/newalerts':(this.props.role  === "manager" ? '/managernewalerts' :this.props.role  === "submanager" ? '/submanagernewalerts':null) }
                     >
+
                       <span className='float-left'>View Details</span>
                       <span className='float-right'>
                         <i className='fas fa-angle-right' />
@@ -85,43 +97,16 @@ class Dashboard extends Component {
                     </a>
                   </div>
                 </div>
-                <div className='col s12 m6 l3 '>
-                  <div className='card text-white bg-danger o-hidden h-100'>
-                    <div className='card-body'>
-                      <div className='card-body-icon'>
-                        <i className='fas fa-fw fa-life-ring' />
-                      </div>
-                      <div className='mr-5'>Check Routing Configuration </div>
-                    </div>
-                    <a
-                      className='card-footer text-white clearfix small z-1'
-                      href='#ee'
-                    >
-                      <span className='float-left'>View Details</span>
-                      <span className='float-right'>
-                        <i className='fas fa-angle-right' />
-                      </span>
-                    </a>
-                  </div>
-                </div>
+               
               </div>
 
               <div className='row'>
-                <div className='col s12 m6 l6 '>
+                <div className='col s12 m12 l12 '>
                   <div className='card text-white  o-hidden white h-100'>
                     <div className='card-body'>
-                      <BarChart />
-                    </div>
-                  </div>
-                </div>
-             
-
-             
-                <div className='col s12 m6 l6 '>
-                  <div className='card text-white  o-hidden white h-100'>
-                    <div className='card-body'>
-                      <LineChart />
-                     
+                    <h4 className="black-text center">Alerts</h4>
+                      <BarChart labels = {this.props.visualization.alertsFound ? Object.keys(this.props.visualization.alerts): null}
+                       data ={this.props.visualization.alertsFound ? Object.values(this.props.visualization.alerts): null} />
                     </div>
                   </div>
                 </div>
@@ -129,61 +114,29 @@ class Dashboard extends Component {
 
              
 
-              
-              <div className='row'>
-                <div className='col s12 m3 l3 '>
+                <div className='row'>
+                <div className='col s12 12 l12 '>
                   <div className='card text-white o-hidden white h-100'>
                     <div className='card-body'>
-                      <HorizontalBar></HorizontalBar>
-                    </div>
-                  </div>
-                </div>
-              
-                <div className='col s12 m3 l3 '>
-                  <div className='card text-white o-hidden white h-100'>
-                    <div className='card-body'>
-                    <HorizontalBar></HorizontalBar>
-                    </div>
-                  </div>
-                </div>
-                <div className='col s12 m3 l3 '>
-                  <div className='card text-white o-hidden white h-100'>
-                    <div className='card-body'>
-                    <HorizontalBar></HorizontalBar>
-                    </div>
-                  </div>
-                </div>
-                <div className='col s12 m3 l3 '>
-                  <div className='card text-white o-hidden white h-100'>
-                    <div className='card-body'>
-                    <HorizontalBar></HorizontalBar>
+                       <h4 className="black-text center">VM Services</h4>
+                      <HorizontalBar labels = {this.props.visualization.servicesFound ? Object.keys(this.props.visualization.services): null}
+                       data ={this.props.visualization.servicesFound ? Object.values(this.props.visualization.services): null}></HorizontalBar>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className='row'>
-                <div className='col s12 m4 l4 '>
-                  <div className='card text-white o-hidden white h-100'>
-                    <div className='card-body'>
-                      <PieChart />
-                    </div>
-                  </div>
-                </div>
               
-                <div className='col s12 m4 l4 '>
+              <div className='row'>
+                <div className='col s12 m12 l12 '>
                   <div className='card text-white o-hidden white h-100'>
                     <div className='card-body'>
-                      <DoughnutChart />
+                    <h4 className="black-text center">Logs</h4>
+                      <DoughnutChart labels = {this.props.visualization.logsFound ? Object.keys(this.props.visualization.logs): null}
+                       data ={this.props.visualization.logsFound ? Object.values(this.props.visualization.logs): null}/>
                     </div>
                   </div>
                 </div>
-                <div className='col s12 m4 l4 '>
-                  <div className='card text-white o-hidden white h-100'>
-                    <div className='card-body'>
-                      <Radarchart></Radarchart>
-                    </div>
-                  </div>
-                </div>
+
                
               </div>
 {/* <button href="/Addrole"> add </button> */}
@@ -197,12 +150,16 @@ class Dashboard extends Component {
 }
 Dashboard.propTypes = {
   isAuthenticated: PropTypes.bool,
+  logsDoughnutGraph:  PropTypes.func.isRequired,
+  alertsBarGraph: PropTypes.func.isRequired,
+  vmHorizontalGraph: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
   token: state.auth.token,
-  role: state.auth.role
+  role: state.auth.role,
+  visualization: state.visualization
 })
 
-export default connect(mapStateToProps)(Dashboard)
+export default connect(mapStateToProps, { logsDoughnutGraph, alertsBarGraph, vmHorizontalGraph})(Dashboard)

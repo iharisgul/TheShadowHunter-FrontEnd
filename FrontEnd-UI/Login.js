@@ -6,7 +6,10 @@ import PropTypes from 'prop-types'
 import { login } from '../actions/adminAuthAction'
 import Alert from '../layout/Alert'
 import Dashboard from './Dashboard'
-// import Signup from './Signup'
+import internetSecurity from './internetSecurity.jpg'
+import "./Login.css";
+
+import Particles from 'react-particles-js'
 
 const Login = ({ login, isAuthenticated, token, role}) => {
   const [formData, setFormData] = useState({
@@ -34,18 +37,62 @@ const Login = ({ login, isAuthenticated, token, role}) => {
     <BrowserRouter>
       <Route path="/dasboard" component={Dashboard} />
       {/* <Route path="/signup" component={Signup} /> */}
+      <div className="page stylelogin">
 
-      <div className="container-fluid">
-        
+      <div className="container-fluid" >
+      <Particles
+    params={{
+	    "particles": {
+	        "number": {
+	            "value": 80,
+	            "density": {
+	                "enable": true,
+	                "value_area": 500
+	            }
+	        },
+	        "line_linked": {
+	            "enable": true,
+	            "opacity": 0.05
+	        },
+	        "move": {
+	            "direction": "right",
+	            "speed": 0.05
+	        },
+	        "size": {
+	            "value": 1
+	        },
+	        "opacity": {
+	            "anim": {
+	                "enable": true,
+	                "speed": 1,
+	                "opacity_min": 0.05
+	            }
+	        }
+	    },
+	    "interactivity": {
+	        "events": {
+	            "onclick": {
+	                "enable": true,
+	                "mode": "push"
+	            }
+	        },
+	        "modes": {
+	            "push": {
+	                "particles_nb": 1
+	            }
+	        }
+	    },
+	    "retina_detect": true
+	}} />
         <center>
         
-          <div className="signin center" style={{ zIndex: 9999, position: 'relative', opacity: '0.8',  marginTop:'10%'}}>
-          <h2 className="center black-text">Welcome to Shadow Hunters</h2>
-          <h4 className="center black-text">Admin Panel</h4>
-            <div className="card animate fadeLeft black " style={{ width:'50%', margin:'auto', border:'3px solid #07575B'}}>
-              <div className="card-content white-text black " >
+          <div className="signin center" style={{ zIndex: 2, position: 'relative', opacity: '0.7px',  alignItems: 'center'}}>
+            <div className="card animate fadeLeft " style={{ width:'30%', margin:'auto', border:'3px solid #07575B'}}>
+              <div className="card-content white-text " style={{padding:'10%'}} >
                 <form onSubmit={e => onSubmit(e)}>
-                  <h1 className="h3 mb-3 font-weight-normal white-text" style={{  opacity: '1' }}>Sign In</h1>
+                <h2 className="center white-text" style={{letterSpacing: '1px', fontStyle: 'italic'}}>Shadow Hunters</h2>
+          {/* <h4 className="center white-text"  style={{letterSpacing: '2.5px', fontWeight: 700}}>Admin Panel</h4> */}
+                  <h1 className="h3 mb-3 font-weight-normal white-text" style={{  opacity: '1' }}>Sign In as Admin</h1>
                   <Alert />
                   <br />
                   <div className="form-group" style={{  opacity: '1' }}>
@@ -93,6 +140,8 @@ const Login = ({ login, isAuthenticated, token, role}) => {
 
           
         </center>
+        </div>
+
       </div>
 
 

@@ -4,6 +4,7 @@ import { BrowserRouter, Redirect, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import {managerregister } from '../actions/managerAuthAction'
+import {setAlert} from '../actions/setAlert'
 import Alert from '../layout/Alert'
 import addservices from './Addservices';
 
@@ -41,9 +42,11 @@ import './Addrole.css';
 
   const onSubmit = async e => {
     e.preventDefault()
-
-    managerregister({ username, email, role });
-  };
+    managerregister({ username, email, role })
+    // window.location.reload(true);
+    console.log(username)
+        // setAlert('User Added Successfully', 'primary')
+}
 
   // //Redirect if logged  in 
   //  if (isAuthenticated) {
@@ -68,9 +71,8 @@ import './Addrole.css';
       <BrowserRouter>
    <Route path='/navigation' component={Navigation} />
         <div className='app'>
-        {roles === "admin" ? <Navigation/>:(roles === "manager" ? <NavigationManager/>:(roles === "submanager"?<NavigationSubManager/>:null ) )}
+        {roles === "admin" ? <Navigation/>:null}
           {/* <!-- Navbar goes here --> */}
-          
 
           <div className='row'>
             
@@ -80,12 +82,12 @@ import './Addrole.css';
               {/* <!-- Teal page content */}
 
               <div className="Login white">
-     <h1 className="center black-text">Add role</h1>
+     <h1 className="center black-text">Add Manager role</h1>
            <br />
            <form onSubmit={e => onSubmit(e)}>
+           <Alert />
        <FormGroup controlId="username" bsSize="large">
          <controlId className="black-text">username</controlId>
-         <Alert />
       <FormControl
               // autoFocus
               // type="text"
